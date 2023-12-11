@@ -1,6 +1,9 @@
 {
   "name": "@falconeye-tech/wizard",
   "version": "1.0.0",
+  "bin": {
+    "falconeye-wizard": "./index.js"
+  },
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -10,6 +13,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Chen-Yuan-Lai/falconeye-wizard.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "falconeye",

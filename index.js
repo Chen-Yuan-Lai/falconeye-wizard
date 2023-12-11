@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fs from 'fs/promises';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
