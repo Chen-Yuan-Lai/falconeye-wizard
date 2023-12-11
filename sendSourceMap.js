@@ -23,7 +23,6 @@ const sendSourceMap = async (map, userKey, clientToken) => {
     const msg = JSON.parse(errorMessage);
     throw new Error(`Failed to upload source map: ${msg.data}`);
   }
-
   return await res.json();
 };
 export default sendSourceMap;

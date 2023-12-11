@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+import chalk from 'chalk';
 import fs from 'fs/promises';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
@@ -39,7 +39,7 @@ const wizard = async () => {
     if (!isGitRepo) {
       answers.noGit = await select({
         message: `You don't have a git repository. Do you want to continue?`,
-        default: false,
+        default: true,
         choices: [
           { name: 'yes', value: true },
           { name: 'no', value: false },
@@ -48,7 +48,7 @@ const wizard = async () => {
     } else {
       answers.hasGit = await select({
         message: `It seems you have a git repository. Do you want to configure github action to upload source map automatically?`,
-        default: false,
+        default: true,
         choices: [
           { name: 'yes', value: true },
           { name: 'no', value: false },
@@ -102,10 +102,10 @@ const wizard = async () => {
     await runTasks(answers);
   } catch (err) {
     if (err.message === 'User force closed the prompt with 0 null') {
-      console.log(chalk.blue.bgRed.bold('Byeee!'));
+      console.log(`\n${chalk.blue.bgRed.bold('Byeee!')}`);
       process.exit();
     }
-    console.error(err);
+    console.error(err.message);
     process.exit();
   }
 };

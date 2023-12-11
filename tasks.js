@@ -13,85 +13,85 @@ const nextLine = async num => {
   }
 };
 
-const isValid = async (userKey, clientToken) => {
-  try {
-    await validate(userKey, clientToken);
-    return true;
-  } catch (err) {
-    return false;
-  }
-};
-const isUpload = async (map, userKey, clientToken) => {
-  try {
-    await sendSourceMap(map, userKey, clientToken);
-    return true;
-  } catch (err) {
-    return false;
-  }
-};
-
 const runTasks = async answers => {
-  const { path, userKey, clientToken, noGit, hasGit } = answers;
-  console.log(
-    chalk.bold(`
+  const spinner = ora('Processing...');
+  try {
+    const { path, userKey, clientToken, noGit, hasGit } = answers;
+    console.log(path, userKey, clientToken, noGit, hasGit);
+    console.log(
+      chalk.bold(`
   ==================================
   ||                              ||
   ||  Let's start configuration~  ||
   ||                              ||
   ==================================
   `)
-  );
+    );
 
-  console.log(`✨ ${chalk.bold('1) Validating user key & client token')}`);
-  const spinner = ora('Processing').start();
-
-  await new Promise(resolve => setTimeout(resolve, 500));
-  if (await isValid(userKey, clientToken)) {
-    spinner.succeed(chalk.green('Operation successful.'));
-  } else {
-    spinner.fail(chalk.red('Operation failed.'));
-    throw new Error('Please enter correct user key or client token');
-  }
-  await nextLine(3);
-
-  console.log(`✨ ${chalk.bold('2) Building source map')}`);
-  spinner.start();
-  await esbuild.build({
-    entryPoints: [path],
-    bundle: true,
-    sourcemap: true,
-    format: 'esm',
-    platform: 'node',
-    outfile: './bundle.js',
-  });
-  spinner.succeed(chalk.green('Operation successful.'));
-  await nextLine(3);
-  console.log(`✨ ${chalk.bold('3) Uploading source map')}`);
-  spinner.start();
-
-  const map = await fs.readFile('./bundle.js.map', 'utf8');
-  if (await isUpload(map, userKey, clientToken)) {
-    spinner.succeed(chalk.green('Operation successful.'));
-  } else {
-    spinner.fail(chalk.red('Operation failed.'));
-    throw new Error('something wrong in uploading');
-  }
-  await nextLine(3);
-
-  if (!noGit && hasGit) {
-    console.log(`✨ ${chalk.bold('4) build auto uploading workflow')}`);
+    console.log(`✨ ${chalk.bold('1) Validating user key & client token')}`);
     spinner.start();
-    await writeYamlFile(path);
-    spinner.succeed(chalk.green('Operation successful.'));
-  }
-  await nextLine(3);
-  console.log(`✨ ${chalk.bold('5) Deleting unnecessary files')}`);
-  spinner.start();
-  await fs.unlink('./bundle.js');
-  await fs.unlink('./bundle.js.map');
-  spinner.succeed(chalk.green('Operation successful.'));
 
-  console.log(chalk.bold('configuration completed! Bye~'));
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const validateRes = await validate(userKey, clientToken);
+
+    if (validateRes.status && validateRes.status === 'fail') {
+      spinner.fail(chalk.red('Operation failed.'));
+      throw new Error('something wrong in validation');
+    }
+
+    spinner.succeed(chalk.green('Operation successful.'));
+    await nextLine(3);
+
+    console.log(`✨ ${chalk.bold('2) Building source map')}`);
+    spinner.start();
+    await esbuild.build({
+      entryPoints: [path],
+      bundle: true,
+      sourcemap: true,
+      format: 'esm',
+      platform: 'node',
+      outfile: './bundle.js',
+    });
+
+    spinner.succeed(chalk.green('Operation successful.'));
+    await nextLine(3);
+
+    console.log(`✨ ${chalk.bold('3) Uploading source map')}`);
+    spinner.start();
+
+    const map = await fs.readFile('./bundle.js.map', 'utf8');
+    const sendMapRes = await sendSourceMap(map, userKey, clientToken);
+
+    if (sendMapRes.status && sendMapRes.status === 'fail') {
+      spinner.fail(chalk.red('Operation failed.'));
+      throw new Error('something wrong in validation');
+    }
+
+    spinner.succeed(chalk.green(`Operation successful---${sendMapRes.message}`));
+    await nextLine(3);
+
+    if (!noGit && hasGit) {
+      console.log(`✨ ${chalk.bold('4) build auto uploading workflow')}`);
+      spinner.start();
+
+      await writeYamlFile(path);
+      spinner.succeed(chalk.green('Operation successful.'));
+    }
+    await nextLine(3);
+    console.log(`✨ ${chalk.bold('5) Deleting unnecessary files')}`);
+
+    spinner.start();
+    await fs.unlink('./bundle.js');
+    await fs.unlink('./bundle.js.map');
+    spinner.succeed(chalk.green('Operation successful.'));
+
+    await nextLine(3);
+    console.log(chalk.bold('configuration completed! Bye~ 👋👋👋'));
+  } catch (err) {
+    spinner.fail(chalk.red('Operation failed.'));
+    console.log(err);
+    throw err;
+  }
 };
 
 export default runTasks;
