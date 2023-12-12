@@ -31,7 +31,7 @@ const writeYamlFile = async filePath => {
           { run: 'npm install' },
           {
             name: 'Build Source Map',
-            run: `npx esbuild ${filePath} --bundle --sourcemap --format=esm --platform=node --outfile=./bundle.js`,
+            run: `npx @falconeye-tech/wizard build ${filePath} -o ./bundle.js`,
           },
           {
             name: 'Upload Source Map',
