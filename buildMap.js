@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import esbuild from 'esbuild';
-import { fileURLToPath } from 'url';
 
 const getDependencies = async () => {
   const projectPackage = await fs.readFile('./package.json', 'utf8');
@@ -15,7 +14,7 @@ const shouldMarkAsExternal = async packageName => {
 
 const buildMap = async (path, output) => {
   try {
-    const allDependencies = getDependencies();
+    const allDependencies = await getDependencies();
     const externalDependencies = allDependencies.filter(shouldMarkAsExternal);
 
     await esbuild.build({
