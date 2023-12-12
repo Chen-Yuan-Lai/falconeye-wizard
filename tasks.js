@@ -5,6 +5,7 @@ import esbuild from 'esbuild';
 import sendSourceMap from './sendSourceMap.js';
 import writeYamlFile from './createGitHubAction.js';
 import validate from './validate.js';
+import buildMap from './buildMap.js';
 
 const nextLine = async num => {
   for (let i = 0; i < num; i++) {
@@ -44,14 +45,7 @@ const runTasks = async answers => {
 
     console.log(`✨ ${chalk.bold('2) Building source map')}`);
     spinner.start();
-    await esbuild.build({
-      entryPoints: [path],
-      bundle: true,
-      sourcemap: true,
-      format: 'esm',
-      platform: 'node',
-      outfile: './bundle.js',
-    });
+    await buildMap(path, './bundle.js');
 
     spinner.succeed(chalk.green('Operation successful.'));
     await nextLine(3);
