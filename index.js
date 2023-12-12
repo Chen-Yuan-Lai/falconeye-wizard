@@ -15,7 +15,7 @@ program
   .command('wizard')
   .description('a wizard to help to configure all things step by step')
   .action(async () => {
-    showTitle('FalconEye');
+    await showTitle('FalconEye');
     await wizard();
   });
 
