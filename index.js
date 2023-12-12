@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import chalk from 'chalk';
+import figlet from 'figlet';
 import fs from 'fs/promises';
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
@@ -109,5 +110,25 @@ const wizard = async () => {
     process.exit();
   }
 };
+
+// ascii art
+await figlet.text(
+  'FalconEye',
+  {
+    font: 'Standard', // You can choose different fonts
+    horizontalLayout: 'Ghost',
+    verticalLayout: 'default',
+    width: 80,
+    whitespaceBreak: true,
+  },
+  function (err, data) {
+    if (err) {
+      console.log('Something went wrong...');
+      console.dir(err);
+      return;
+    }
+    console.log(data);
+  }
+);
 
 await wizard();

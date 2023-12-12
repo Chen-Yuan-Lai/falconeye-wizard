@@ -17,6 +17,10 @@ const writeYamlFile = async filePath => {
         'runs-on': 'ubuntu-latest',
         steps: [
           {
+            name: 'Checkout Repository',
+            uses: 'actions/checkout@v4',
+          },
+          {
             name: 'Setup Node',
             uses: 'actions/setup-node@v4',
             with: {
@@ -24,7 +28,7 @@ const writeYamlFile = async filePath => {
               cache: 'npm',
             },
           },
-          { run: 'npm i esbuild' },
+          { run: 'npm install' },
           {
             name: 'Build Source Map',
             run: `npx esbuild ${filePath} --bundle --sourcemap --format=esm --platform=node --outfile=./bundle.js`,
@@ -35,9 +39,9 @@ const writeYamlFile = async filePath => {
               USER_KEY: '${{ secrets.USER_KEY }}',
               CLIENT_TOKEN: '${{ secrets.CLIENT_TOKEN }}',
             },
-            run: `curl -X POST http://handsomelai.shop/api/1.0/sourceMap \\
+            run: `curl -X POST https://handsomelai.shop/api/1.0/sourceMap \\
               -H "Content-Type: multipart/form-data" \\
-              -F "map=./bundle.js.map;type=application/octet-stream" \\
+              -F "map=@./bundle.js.map;type=application/octet-stream" \\
               -F "userKey=\${USER_KEY}" \\
               -F "clientToken=\${CLIENT_TOKEN}"`,
           },
