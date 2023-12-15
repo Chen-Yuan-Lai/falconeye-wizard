@@ -18,7 +18,6 @@ const runTasks = async answers => {
   const spinner = ora('Processing...');
   try {
     const { path, userKey, clientToken, noGit, hasGit } = answers;
-    console.log(path, userKey, clientToken, noGit, hasGit);
     console.log(
       chalk.bold(`
   ==================================
