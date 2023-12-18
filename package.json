@@ -1,6 +1,6 @@
 {
   "name": "@falconeye-tech/wizard",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "bin": {
     "falconeye-wizard": "./index.js"
   },

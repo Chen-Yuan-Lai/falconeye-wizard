@@ -8,9 +8,6 @@ const writeYamlFile = async filePath => {
       push: {
         branches: ['main'],
       },
-      pull_request: {
-        branches: ['main'],
-      },
     },
     jobs: {
       'build-and-upload-source-map': {
@@ -39,7 +36,7 @@ const writeYamlFile = async filePath => {
               USER_KEY: '${{ secrets.USER_KEY }}',
               CLIENT_TOKEN: '${{ secrets.CLIENT_TOKEN }}',
             },
-            run: `curl -X POST https://handsomelai.shop/api/1.0/sourceMap \\
+            run: `curl -X POST https://www.handsomelai.shop/api/1.0/sourceMap \\
               -H "Content-Type: multipart/form-data" \\
               -F "map=@./bundle.js.map;type=application/octet-stream" \\
               -F "userKey=\${USER_KEY}" \\
