@@ -1,4 +1,4 @@
-const API_HOST = 'https://handsomelai.shop';
+const API_HOST = 'https://www.handsomelai.shop';
 const VALIDATE_ENDPOINT = '/api/1.0/capture/validate';
 // mark route 要改
 const validate = async (userKey, clientToken) => {

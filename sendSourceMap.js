@@ -1,4 +1,4 @@
-const API_HOST = 'https://handsomelai.shop';
+const API_HOST = 'https://www.handsomelai.shop';
 const SOURCE_MAP_ENDPOINT = '/api/1.0/sourceMap';
 
 const sendSourceMap = async (map, userKey, clientToken) => {
